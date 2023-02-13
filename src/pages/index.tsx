@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
+import Offers from "@/components/Offers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function Home() {
         </h1>
         <input type="checkbox" name="login" id="login" />
         <label htmlFor="login">logged in</label>
+        <Offers />
       </main>
     </>
   );
