@@ -1,30 +1,29 @@
-import Head from "next/head";
+import { useQuery } from "react-query";
 import { Inter } from "@next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export default function Offers() {
-  const previews = new Array(50).fill(0).map((_, i) => {
-    return {
-      productId: 1234 + i,
-      previewUrl: "https://loremflickr.com/640/360/laptop,sale?lock=" + i,
-      productName: "Product name " + i,
-      price: 43.4 + i * 2,
-      currency: "EUR",
-      votes: 1234 + i * 3,
-      productPageURL: "",
-    };
-  });
+  const { isLoading, isError, data, error } = useQuery("todos", () =>
+    fetch("api/offers?page=1&timestamp=12343").then((res) => res.json())
+  );
+
+  if (isLoading) return "Loading";
+  if (isError) return "Error";
 
   return (
     <section>
       <div className="grid grid-cols-4 gap-4 p-4">
-        {previews.map((offer) => (
+        {data.data.map((offer) => (
           <a
             className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
             href={offer.productPageURL}
           >
-            <img src="" alt="" src={offer.previewUrl} />
+            <img
+              src=""
+              alt=""
+              src={offer.previewUrl}
+              height="250"
+              width="500"
+            />
             <div className=" p-3">
               <h4 className="text-lg font-bold group-hover:underline">
                 {offer.productName}
