@@ -21,7 +21,7 @@ interface ErrorInfo {
   message: string
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
   errors: ErrorInfo[]
 }
 
@@ -36,14 +36,15 @@ export default function handler(
 
 
   const previews = new Array(50).fill(0).map((_, i) => {
+    const index = i + Number(page -1) * 50
     return {
-      productId: 1234 + i,
-      previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + i,
-      productName: "Product name " + i,
-      price: 43.4 + i * 2,
+      productId: 1234 + index,
+      previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + index,
+      productName: "Product name " + index,
+      price: 43.4 + index * 2,
       currency: "EUR",
-      votes: 1234 + i * 3,
-      productPageURL: "/offer/"+(1234 + i),
+      votes: 1234 + index * 3,
+      productPageURL: "/offer/"+(1234 + index),
     };
   });
   res.status(200).json({ offerPreviews: previews, hasMore: true });
