@@ -1,25 +1,26 @@
 import { useQuery } from "react-query";
 import { Inter } from "@next/font/google";
+import { GetPreviewsResponse } from "@/pages/api/offers";
 
 export default function Offers() {
-  const { isLoading, isError, data, error } = useQuery("todos", () =>
-    fetch("api/offers?page=1&timestamp=12343").then((res) => res.json())
+  const { isLoading, isError, data, error } = useQuery<GetPreviewsResponse>(
+    "offerPreviews",
+    () => fetch("api/offers?page=1&timestamp=12343").then((res) => res.json())
   );
 
-  if (isLoading) return "Loading";
-  if (isError) return "Error";
+  if (isLoading) return <>Loading</>;
+  if (isError || !data) return <>Error</>;
 
   return (
     <section>
       <div className="grid grid-cols-4 gap-4 p-4">
-        {data.data.map((offer) => (
+        {data.offerPreviews.map((offer) => (
           <a
             className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
             href={offer.productPageURL}
           >
             <img
-              src=""
-              alt=""
+              alt={offer.productName}
               src={offer.previewUrl}
               height="250"
               width="500"

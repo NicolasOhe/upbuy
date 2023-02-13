@@ -11,8 +11,8 @@ type OfferPreview = {
   productPageURL: string;
 };
 
-interface SucessResponse {
-  data: OfferPreview[]
+export interface GetPreviewsResponse {
+  offerPreviews: OfferPreview[]
   hasMore: boolean
 }
 
@@ -25,11 +25,10 @@ interface ErrorResponse {
   errors: ErrorInfo[]
 }
 
-export type GetPreviewsResponse = SucessResponse | ErrorResponse
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<GetPreviewsResponse>
+  res: NextApiResponse<GetPreviewsResponse | ErrorResponse>
 ) {
   const { page, timestamp } = req.query;
   if (!page || !timestamp)  return res.status(400).json({ errors: [{type: 400, message: "Missing query parameter page or timestamp"}] });
@@ -44,8 +43,8 @@ export default function handler(
       price: 43.4 + i * 2,
       currency: "EUR",
       votes: 1234 + i * 3,
-      productPageURL: "",
+      productPageURL: "/offer/"+(1234 + i),
     };
   });
-  res.status(200).json({ data: previews, hasMore: true });
+  res.status(200).json({ offerPreviews: previews, hasMore: true });
 }
