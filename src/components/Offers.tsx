@@ -50,7 +50,7 @@ export default function Offers() {
       setPageIndex((s) => s + 1);
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, setPageIndex, fetchNextPage]);
 
   const allOfferPreviews = data
     ? data.pages.reduce((acc, cur) => {
@@ -113,7 +113,10 @@ export default function Offers() {
                     allOfferPreviews[virtualRow.index * columns + i];
                   if (!offer) return null;
                   return (
-                    <div className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg">
+                    <div
+                      key={offer.productId}
+                      className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
+                    >
                       <img
                         alt={offer.productName}
                         src={offer.previewUrl}
@@ -145,79 +148,6 @@ export default function Offers() {
 
       <button
         ref={loadMoreRef}
-        onClick={() => {
-          setPageIndex((s) => s + 1);
-          fetchNextPage();
-        }}
-        //disabled={!hasNextPage || isFetchingNextPage}
-      >
-        {isFetchingNextPage
-          ? "Loading more..."
-          : hasNextPage
-          ? "Load More"
-          : "Nothing more to load"}
-      </button>
-    </div>
-  );
-
-  return (
-    <div ref={parentRef}>
-      <div
-        classXName="Xgrid grid-cols-4 gap-4 p-4"
-        style={{
-          height: virtualizer.getTotalSize(),
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            transform: `translateY(${
-              items[0].start - virtualizer.options.scrollMargin
-            }px)`,
-          }}
-        >
-          {items.map((virtualRow) => {
-            const offer = allOfferPreviews[virtualRow.index];
-            return (
-              <div
-                key={virtualRow.key}
-                data-index={virtualRow.index}
-                ref={virtualizer.measureElement}
-                classXName="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
-                href={offer.productPageURL}
-              >
-                <img
-                  alt={offer.productName}
-                  src={offer.previewUrl}
-                  loading="lazy"
-                  height="250"
-                  width="500"
-                />
-                <div className="p-3">
-                  <h4 className="text-lg font-bold group-hover:underline">
-                    {offer.productName}
-                  </h4>
-                  <p className="flex justify-between">
-                    <span>
-                      {new Intl.NumberFormat("de-DE", {
-                        style: "currency",
-                        currency: offer.currency,
-                      }).format(offer.price)}
-                    </span>
-                    <span>{offer.votes} 👍 👎</span>
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <button
         onClick={() => {
           setPageIndex((s) => s + 1);
           fetchNextPage();
