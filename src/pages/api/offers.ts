@@ -26,7 +26,7 @@ export interface ErrorResponse {
 }
 
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<GetPreviewsResponse | ErrorResponse>
 ) {
@@ -47,5 +47,7 @@ export default function handler(
       productPageURL: "/offer/"+(1234 + index),
     };
   });
+
+  await new Promise((res)=>setTimeout(res, 1000))
   res.status(200).json({ offerPreviews: previews, hasMore: true });
 }

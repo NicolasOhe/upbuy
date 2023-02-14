@@ -1,8 +1,9 @@
 import { useInfiniteQuery } from "react-query";
 import { Inter } from "@next/font/google";
 import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
+import { useInView } from "react-intersection-observer";
 
 const sentences = new Array(10000).fill(true).map(() => "asdfasdf afsdf asdf");
 
@@ -33,6 +34,23 @@ export default function Offers() {
       },
     }
   );
+
+  const {
+    ref: loadMoreRef,
+    inView,
+    entry,
+  } = useInView({
+    /* Optional options */
+    threshold: 0,
+    rootMargin: "0px 0px 100% 0px",
+  });
+
+  useEffect(() => {
+    if (inView && !isFetchingNextPage) {
+      setPageIndex((s) => s + 1);
+      fetchNextPage();
+    }
+  }, [inView]);
 
   const allOfferPreviews = data
     ? data.pages.reduce((acc, cur) => {
@@ -125,11 +143,20 @@ export default function Offers() {
         </div>
       </div>
 
-      {isFetchingNextPage
-        ? "Loading more..."
-        : hasNextPage
-        ? "Load More"
-        : "Nothing more to load"}
+      <button
+        ref={loadMoreRef}
+        onClick={() => {
+          setPageIndex((s) => s + 1);
+          fetchNextPage();
+        }}
+        //disabled={!hasNextPage || isFetchingNextPage}
+      >
+        {isFetchingNextPage
+          ? "Loading more..."
+          : hasNextPage
+          ? "Load More"
+          : "Nothing more to load"}
+      </button>
     </div>
   );
 
