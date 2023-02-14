@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "@next/font/google";
 import Offers from "@/components/Offers";
+import { RowVirtualizerDynamicWindow } from "@/components/Offers copy";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function Home() {
         <input type="checkbox" name="login" id="login" />
         <label htmlFor="login">logged in</label>
         <Offers />
+        {/* <RowVirtualizerDynamicWindow /> */}
       </main>
     </>
   );
