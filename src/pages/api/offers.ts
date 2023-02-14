@@ -25,6 +25,10 @@ export interface ErrorResponse {
   errors: ErrorInfo[];
 }
 
+const productsPerPage = 50;
+const products = 480;
+const answerDelayMs = 500;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<GetPreviewsResponse | ErrorResponse>
@@ -46,12 +50,23 @@ export default async function handler(
       ],
     });
 
-  const previews = new Array(50).fill(0).map((_, i) => {
-    const index = i + (Number(page) - 1) * 50;
+  let productsForPage = productsPerPage;
+  let isLast = false;
+
+  const startIndex = (Number(page) - 1) * productsPerPage;
+
+  if (startIndex + productsPerPage > products) {
+    isLast = true;
+    productsForPage = products - startIndex;
+  }
+
+  const previews = new Array(productsForPage).fill(0).map((_, i) => {
+    const index = i + startIndex;
+
     return {
       productId: 1234 + index,
       previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + index,
-      productName: "Product name " + index,
+      productName: "Product name " + (index + 1),
       price: 43.4 + index * 2,
       currency: "EUR",
       votes: 1234 + index * 3,
@@ -59,6 +74,6 @@ export default async function handler(
     };
   });
 
-  await new Promise((res) => setTimeout(res, 1000));
-  res.status(200).json({ offerPreviews: previews, hasMore: true });
+  await new Promise((resolve) => setTimeout(resolve, answerDelayMs));
+  res.status(200).json({ offerPreviews: previews, hasMore: !isLast });
 }

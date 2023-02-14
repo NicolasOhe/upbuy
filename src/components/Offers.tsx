@@ -27,9 +27,8 @@ export default function Offers() {
       ),
     {
       getNextPageParam: (lastPage, pages) => {
-        console.log("getNextPageParam");
+        if (!lastPage.hasMore) return false;
         const nextPage = pageIndex + 1;
-        //setPageIndex((i) => i + 1);
         return nextPage;
       },
     }
@@ -46,11 +45,18 @@ export default function Offers() {
   });
 
   useEffect(() => {
-    if (inView && !isFetchingNextPage) {
+    if (inView && !isFetching && !isFetchingNextPage && hasNextPage) {
       setPageIndex((s) => s + 1);
       fetchNextPage();
     }
-  }, [inView, setPageIndex, fetchNextPage]);
+  }, [
+    inView,
+    setPageIndex,
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+  ]);
 
   const allOfferPreviews = data
     ? data.pages.reduce((acc, cur) => {
@@ -73,15 +79,20 @@ export default function Offers() {
     count: Math.trunc(allOfferPreviews.length / 4) + 1,
     estimateSize: () => 200,
     scrollMargin: parentOffsetRef.current,
+    overscan: 2,
   });
   const items = virtualizer.getVirtualItems();
-  console.log();
 
   // if (isLoading) return <>Loading</>;
   // if (isError || !data) return <>Error</>;
 
+  const formatter = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  });
+
   return (
-    <div ref={parentRef} className="List">
+    <div ref={parentRef}>
       <div
         style={{
           height: virtualizer.getTotalSize(),
@@ -128,12 +139,7 @@ export default function Offers() {
                           {offer.productName}
                         </h4>
                         <p className="flex justify-between">
-                          <span>
-                            {new Intl.NumberFormat("de-DE", {
-                              style: "currency",
-                              currency: offer.currency,
-                            }).format(offer.price)}
-                          </span>
+                          <span>{formatter.format(offer.price)}</span>
                           <span>{offer.votes} 👍 👎</span>
                         </p>
                       </div>
