@@ -80,9 +80,6 @@ export default function Offers({
 
   const items = virtualizer.getVirtualItems();
 
-  // if (isLoading) return <>Loading</>;
-  // if (isError || !data) return <>Error</>;
-
   return (
     <>
       <div ref={parentRef}>

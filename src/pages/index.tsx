@@ -3,8 +3,13 @@ import { useState } from "react";
 
 import Offers from "@/components/Offers";
 import { getOfferPreviews } from "@/queryResolvers/getOfferPreviews";
+import { GetPreviewsResponse } from "./api/offers";
 
-export default function Home(props) {
+interface HomeProps {
+  offerPreviews: GetPreviewsResponse;
+}
+
+export default function Home(props: HomeProps) {
   const [isLoggedInUser, setIsLoggedInUser] = useState(true);
   const swithLoggingStatus = () => {
     setIsLoggedInUser((s) => !s);
