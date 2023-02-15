@@ -1,7 +1,7 @@
 import { OfferPreview } from "@/pages/api/offers";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import LikeButtons from "./LikeButtons";
+
+import LikeButtons from "@/components/LikeButtons";
 
 interface OffersDetailsProps {
   isLoggedInUser: boolean;

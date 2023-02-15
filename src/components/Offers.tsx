@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from "react-query";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useRef, useLayoutEffect } from "react";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
-import { useInView } from "react-intersection-observer";
 
 import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
 import OfferDetails from "@/components/OfferDetails";
 import OfferPreview from "@/components/OfferPreview";
+import LoadMore from "./LoadMore";
 
 interface OffersProps {
   isLoggedInUser: boolean;
@@ -15,17 +15,10 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
   const [pageIndex, setPageIndex] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState<number | null>();
 
-  const {
-    isLoading,
-    isError,
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery<GetPreviewsResponse, ErrorResponse>(
+  const reactQueryContext = useInfiniteQuery<
+    GetPreviewsResponse,
+    ErrorResponse
+  >(
     "offerPreviews",
     ({ pageParam = 1 }) =>
       fetch(`api/offers?page=${pageParam}&timestamp=12343`).then((res) =>
@@ -40,47 +33,38 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
     }
   );
 
-  const {
-    ref: loadMoreRef,
-    inView,
-    entry,
-  } = useInView({
-    /* Optional options */
-    threshold: 0,
-    rootMargin: "0px 0px 100% 0px",
-  });
+  const { data } = reactQueryContext;
 
-  useEffect(() => {
-    if (inView && !isFetching && !isFetchingNextPage && hasNextPage) {
-      setPageIndex((s) => s + 1);
-      fetchNextPage();
-    }
-  }, [
-    inView,
-    setPageIndex,
-    fetchNextPage,
-    isFetching,
-    isFetchingNextPage,
-    hasNextPage,
-  ]);
-
-  const allOfferPreviews = data
-    ? data.pages.reduce((acc, cur) => {
-        acc.push(...cur.offerPreviews);
-        return acc;
-      }, [] as GetPreviewsResponse["offerPreviews"])
-    : [];
-
-  const selectedProduct = allOfferPreviews.find(
-    (preview) => preview.productId === selectedProductId
+  const allOfferPreviews = useMemo(
+    () =>
+      data
+        ? data.pages.reduce((acc, cur) => {
+            acc.push(...cur.offerPreviews);
+            return acc;
+          }, [] as GetPreviewsResponse["offerPreviews"])
+        : [],
+    [data]
   );
-  const parentRef = React.useRef<HTMLDivElement>(null);
 
-  const parentOffsetRef = React.useRef(0);
+  const selectedProduct = useMemo(
+    () =>
+      allOfferPreviews.find(
+        (preview) => preview.productId === selectedProductId
+      ),
+    [allOfferPreviews, selectedProductId]
+  );
+  const parentRef = useRef<HTMLDivElement>(null);
+  const parentOffsetRef = useRef(0);
 
   const columns = 4;
+  const columnIndexes = new Array(columns).fill(0).map((_, i) => i);
 
-  React.useLayoutEffect(() => {
+  const getOffers = (rowIndex: number) =>
+    columnIndexes
+      .map((i) => allOfferPreviews[rowIndex * columns + i])
+      .filter(Boolean);
+
+  useLayoutEffect(() => {
     parentOffsetRef.current = parentRef.current?.offsetTop ?? 0;
   }, []);
 
@@ -90,28 +74,22 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
     scrollMargin: parentOffsetRef.current,
     overscan: 2,
   });
+
   const items = virtualizer.getVirtualItems();
 
   // if (isLoading) return <>Loading</>;
   // if (isError || !data) return <>Error</>;
 
-  console.log(" render offers");
   return (
     <>
       <div ref={parentRef}>
         <div
-          style={{
-            height: virtualizer.getTotalSize(),
-            width: "100%",
-            position: "relative",
-          }}
+          className="w-full relative"
+          style={{ height: virtualizer.getTotalSize() }}
         >
           <div
+            className="w-full absolute top-0 left-0"
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
               transform: `translateY(${
                 items[0]?.start - virtualizer.options.scrollMargin
               }px)`,
@@ -123,40 +101,24 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
                   key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={virtualizer.measureElement}
-                  className="grid grid-cols-4 gap-4 p-4"
+                  className="grid grid-cols-4 gap-4 mb-4"
                 >
-                  {new Array(columns).fill(true).map((_, i) => {
-                    const offer =
-                      allOfferPreviews[virtualRow.index * columns + i];
-                    if (!offer) return null;
-                    return (
-                      <OfferPreview
-                        offer={offer}
-                        setSelectedProductId={setSelectedProductId}
-                        isLoggedInUser={isLoggedInUser}
-                      />
-                    );
-                  })}
+                  {getOffers(virtualRow.index).map((offer) => (
+                    <OfferPreview
+                      offer={offer}
+                      setSelectedProductId={setSelectedProductId}
+                      isLoggedInUser={isLoggedInUser}
+                    />
+                  ))}
                 </div>
               );
             })}
           </div>
         </div>
-
-        <button
-          ref={loadMoreRef}
-          onClick={() => {
-            setPageIndex((s) => s + 1);
-            fetchNextPage();
-          }}
-          disabled={!hasNextPage || isFetchingNextPage}
-        >
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-            ? "Load More"
-            : "Nothing more to load"}
-        </button>
+        <LoadMore
+          reactQueryContext={reactQueryContext}
+          setPageIndex={setPageIndex}
+        />
       </div>
       <OfferDetails
         isLoggedInUser={isLoggedInUser}
