@@ -14,7 +14,7 @@ import { getOfferPreviews } from "@/queryResolvers/getOfferPreviews";
 
 interface OffersProps {
   isLoggedInUser: boolean;
-  initialPreviews: IOfferPreview[];
+  initialPreviews: GetPreviewsResponse;
 }
 
 export default function Offers({
@@ -28,7 +28,7 @@ export default function Offers({
     GetPreviewsResponse,
     ErrorResponse
   >("offerPreviews", getOfferPreviews, {
-    initialData: { pages: [initialPreviews] },
+    initialData: { pages: [initialPreviews], pageParams: [] },
     getNextPageParam: (lastPage, pages) => {
       if (!lastPage.hasMore) return false;
       const nextPage = pageIndex + 1;
