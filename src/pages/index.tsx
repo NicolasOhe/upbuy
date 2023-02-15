@@ -2,8 +2,9 @@ import Head from "next/head";
 import { useState } from "react";
 
 import Offers from "@/components/Offers";
+import { getOfferPreviews } from "@/queryResolvers/getOfferPreviews";
 
-export default function Home() {
+export default function Home(props) {
   const [isLoggedInUser, setIsLoggedInUser] = useState(true);
   const swithLoggingStatus = () => {
     setIsLoggedInUser((s) => !s);
@@ -32,8 +33,19 @@ export default function Home() {
           logged in (Simulate logged in user vs. visitor by toogling this
           checkbox)
         </label>
-        <Offers isLoggedInUser={isLoggedInUser} />
+        <Offers
+          isLoggedInUser={isLoggedInUser}
+          initialPreviews={props.offerPreviews}
+        />
       </main>
     </>
   );
+}
+
+export async function getStaticProps() {
+  const offerPreviews = await getOfferPreviews({ pageParam: 1 });
+  return {
+    props: { offerPreviews },
+    revalidate: 30, // In seconds
+  };
 }

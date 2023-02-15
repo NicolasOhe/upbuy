@@ -27,7 +27,7 @@ export interface ErrorResponse {
 
 const productsPerPage = 50;
 export const products = 480;
-const answerDelayMs = 500;
+const answerDelayMs = 100;
 
 export default async function handler(
   req: NextApiRequest,
@@ -52,6 +52,7 @@ export default async function handler(
 
   let productsForPage = productsPerPage;
   let isLast = false;
+  console.log("productsForPage", productsForPage);
 
   const startIndex = (Number(page) - 1) * productsPerPage;
 
@@ -59,6 +60,7 @@ export default async function handler(
     isLast = true;
     productsForPage = products - startIndex;
   }
+  console.log("productsForPage", productsForPage);
 
   const previews = new Array(productsForPage).fill(0).map((_, i) => {
     const index = i + startIndex;

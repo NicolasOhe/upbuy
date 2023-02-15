@@ -1,1 +1,4 @@
-export const getVotes = () => fetch(`api/user/votes`).then((res) => res.json());
+import { buildFullPath } from "@/utils/buildFullPath";
+
+export const getVotes = () =>
+  fetch(buildFullPath(`api/user/votes`)).then((res) => res.json());

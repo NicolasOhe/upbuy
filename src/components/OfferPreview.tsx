@@ -42,13 +42,13 @@ export default function OfferPreview({
             {offer.productName}
           </h4>
         </Link>
-        <p className="flex justify-between">
+        <div className="flex justify-between">
           <span>{currencyFormatter.format(offer.price)}</span>
           <span>
             {offer.votes}{" "}
             {isLoggedInUser && <LikeButtons productId={offer.productId} />}
           </span>
-        </p>
+        </div>
       </div>
     </div>
   );

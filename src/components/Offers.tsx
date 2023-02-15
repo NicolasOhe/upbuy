@@ -2,36 +2,39 @@ import { useInfiniteQuery } from "react-query";
 import React, { useState, useMemo, useRef, useLayoutEffect } from "react";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 
-import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
+import {
+  ErrorResponse,
+  GetPreviewsResponse,
+  OfferPreview as IOfferPreview,
+} from "@/pages/api/offers";
 import OfferDetails from "@/components/OfferDetails";
 import OfferPreview from "@/components/OfferPreview";
 import LoadMore from "./LoadMore";
+import { getOfferPreviews } from "@/queryResolvers/getOfferPreviews";
 
 interface OffersProps {
   isLoggedInUser: boolean;
+  initialPreviews: IOfferPreview[];
 }
 
-export default function Offers({ isLoggedInUser }: OffersProps) {
+export default function Offers({
+  isLoggedInUser,
+  initialPreviews,
+}: OffersProps) {
   const [pageIndex, setPageIndex] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState<number | null>();
 
   const reactQueryContext = useInfiniteQuery<
     GetPreviewsResponse,
     ErrorResponse
-  >(
-    "offerPreviews",
-    ({ pageParam = 1 }) =>
-      fetch(`api/offers?page=${pageParam}&timestamp=12343`).then((res) =>
-        res.json()
-      ),
-    {
-      getNextPageParam: (lastPage, pages) => {
-        if (!lastPage.hasMore) return false;
-        const nextPage = pageIndex + 1;
-        return nextPage;
-      },
-    }
-  );
+  >("offerPreviews", getOfferPreviews, {
+    initialData: { pages: [initialPreviews] },
+    getNextPageParam: (lastPage, pages) => {
+      if (!lastPage.hasMore) return false;
+      const nextPage = pageIndex + 1;
+      return nextPage;
+    },
+  });
 
   const { data } = reactQueryContext;
 
@@ -72,7 +75,7 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
     count: Math.trunc(allOfferPreviews.length / 4) + 1,
     estimateSize: () => 200,
     scrollMargin: parentOffsetRef.current,
-    overscan: 2,
+    overscan: 4,
   });
 
   const items = virtualizer.getVirtualItems();
@@ -105,6 +108,7 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
                 >
                   {getOffers(virtualRow.index).map((offer) => (
                     <OfferPreview
+                      key={offer.productId}
                       offer={offer}
                       setSelectedProductId={setSelectedProductId}
                       isLoggedInUser={isLoggedInUser}
