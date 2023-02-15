@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function OfferDetails() {
+interface OffersDetailsProps {
+  isLoggedInUser: boolean;
+}
+
+export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
   const { query } = useRouter();
 
   const productId = parseInt(String(query.productId));
@@ -12,9 +16,9 @@ export default function OfferDetails() {
     productId: productId,
     previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + productId,
     productName: "Product name " + (index + 1),
-    price: 43.4 + productId * 2,
+    price: 43.4 + index * 2,
     currency: "EUR",
-    votes: 1234 + productId * 3,
+    votes: 1234 + index * 3,
     productPageURL: "/offer/" + productId,
     details:
       "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione magni eius tenetur quibusdam sapiente perferendis sunt rerum, assumenda dolores? Nihil illo temporibus saepe, voluptates facere totam voluptatibus magni distinctio blanditiis, eaque, quia a iusto dolor eveniet! Ipsa in veniam sint magnam ad doloremque sapiente! Corporis aperiam omnis officia nulla voluptates?",
@@ -49,7 +53,9 @@ export default function OfferDetails() {
           <h4 className="text-2xl font-bold pb-1">{offer.productName}</h4>
           <p className="flex justify-between pb-3">
             <span>{formatter.format(offer.price)}</span>
-            <span>{offer.votes} 👍 👎</span>
+            <span>
+              {offer.votes} {isLoggedInUser && "👍 👎"}
+            </span>
           </p>
           <p>{offer.details}</p>
         </div>

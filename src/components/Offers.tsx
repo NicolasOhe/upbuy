@@ -6,8 +6,13 @@ import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
 
-export default function Offers() {
+interface OffersProps {
+  isLoggedInUser: boolean;
+}
+
+export default function Offers({ isLoggedInUser }: OffersProps) {
   const [pageIndex, setPageIndex] = useState(1);
+
   const {
     isLoading,
     isError,
@@ -141,7 +146,9 @@ export default function Offers() {
                         </h4>
                         <p className="flex justify-between">
                           <span>{formatter.format(offer.price)}</span>
-                          <span>{offer.votes} 👍 👎</span>
+                          <span>
+                            {offer.votes} {isLoggedInUser && "👍 👎"}
+                          </span>
                         </p>
                       </div>
                     </Link>
