@@ -1,12 +1,11 @@
 import { useInfiniteQuery } from "react-query";
-import { Inter } from "@next/font/google";
-import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
-import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
+import React, { useState, useEffect } from "react";
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useInView } from "react-intersection-observer";
-import Link from "next/link";
-import LikeButtons from "./LikeButtons";
-import OfferDetails from "./OfferDetails";
+
+import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
+import OfferDetails from "@/components/OfferDetails";
+import OfferPreview from "@/components/OfferPreview";
 
 interface OffersProps {
   isLoggedInUser: boolean;
@@ -14,9 +13,7 @@ interface OffersProps {
 
 export default function Offers({ isLoggedInUser }: OffersProps) {
   const [pageIndex, setPageIndex] = useState(1);
-  const [selectedProductId, setSelectedProductId] = useState<
-    number | undefined
-  >();
+  const [selectedProductId, setSelectedProductId] = useState<number | null>();
 
   const {
     isLoading,
@@ -98,10 +95,6 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
   // if (isLoading) return <>Loading</>;
   // if (isError || !data) return <>Error</>;
 
-  const formatter = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  });
   console.log(" render offers");
   return (
     <>
@@ -137,43 +130,11 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
                       allOfferPreviews[virtualRow.index * columns + i];
                     if (!offer) return null;
                     return (
-                      <div
-                        key={offer.productId}
-                        className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
-                        //href={"/?productId=" + offer.productId}
-                        //scroll={false}
-                      >
-                        <img
-                          alt={offer.productName}
-                          src={offer.previewUrl}
-                          height="250"
-                          width="500"
-                        />
-                        <div className="p-3">
-                          {/* Adding a query param does not trigger a rerender,
-                          therefore I need a state change to update the view. */}
-                          <Link
-                            href={"/?productId=" + offer.productId}
-                            scroll={false}
-                            onClick={() =>
-                              setSelectedProductId(offer.productId)
-                            }
-                          >
-                            <h4 className="text-lg font-bold group-hover:underline">
-                              {offer.productName}
-                            </h4>
-                          </Link>
-                          <p className="flex justify-between">
-                            <span>{formatter.format(offer.price)}</span>
-                            <span>
-                              {offer.votes}{" "}
-                              {isLoggedInUser && (
-                                <LikeButtons productId={offer.productId} />
-                              )}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
+                      <OfferPreview
+                        offer={offer}
+                        setSelectedProductId={setSelectedProductId}
+                        isLoggedInUser={isLoggedInUser}
+                      />
                     );
                   })}
                 </div>
@@ -200,7 +161,7 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
       <OfferDetails
         isLoggedInUser={isLoggedInUser}
         offer={selectedProduct}
-        close={() => setSelectedProductId()}
+        close={() => setSelectedProductId(null)}
       />
     </>
   );
