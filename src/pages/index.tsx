@@ -48,7 +48,14 @@ export default function Home(props: HomeProps) {
 }
 
 export async function getStaticProps() {
-  const offerPreviews = await getOfferPreviews({ pageParam: 1 });
+  let offerPreviews: GetPreviewsResponse = { offerPreviews: [], hasMore: true };
+
+  try {
+    offerPreviews = await getOfferPreviews({ pageParam: 1 });
+  } catch (e) {
+    console.error(e);
+  }
+
   return {
     props: { offerPreviews },
     revalidate: 30, // In seconds
