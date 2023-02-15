@@ -17,7 +17,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="max-w-7xl m-auto px-4">
-        <h1 className="text-5xl font-bold underline my-8">
+        <h1 className="text-5xl font-bold underline my-8 text-primary">
           Discover the most liked offers on reMarket
         </h1>
         <input
@@ -28,7 +28,7 @@ export default function Home() {
           id="login"
           className="mb-8 mr-3"
         />
-        <label className="" htmlFor="login">
+        <label htmlFor="login">
           logged in (Simulate logged in user vs. visitor by toogling this
           checkbox)
         </label>
