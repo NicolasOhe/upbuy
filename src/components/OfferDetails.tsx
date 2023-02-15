@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import LikeButtons from "./LikeButtons";
 
 interface OffersDetailsProps {
   isLoggedInUser: boolean;
@@ -9,6 +10,7 @@ export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
   const { query } = useRouter();
 
   const productId = parseInt(String(query.productId));
+  console.log("productId", productId);
   if (!productId || Number.isNaN(productId)) return null;
   const index = productId - 1234;
 
@@ -44,8 +46,8 @@ export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
         />
         <Link
           className="absolute top-5 right-5 rounded-xl bg-white px-2 hover:underline"
-          shallow
           href="/"
+          scroll={false}
         >
           close
         </Link>
@@ -54,7 +56,8 @@ export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
           <p className="flex justify-between pb-3">
             <span>{formatter.format(offer.price)}</span>
             <span>
-              {offer.votes} {isLoggedInUser && "👍 👎"}
+              {offer.votes}{" "}
+              {isLoggedInUser && <LikeButtons productId={productId} />}
             </span>
           </p>
           <p>{offer.details}</p>

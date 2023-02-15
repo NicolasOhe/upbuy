@@ -3,12 +3,13 @@ import { Inter } from "@next/font/google";
 import Offers from "@/components/Offers";
 import OfferDetails from "@/components/OfferDetails";
 import { useState } from "react";
+import OffersAll from "@/components/OffersAll";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [isLoggedInUser, setIsLoggedInUser] = useState(false);
-  const handleChange = () => {
+  const [isLoggedInUser, setIsLoggedInUser] = useState(true);
+  const swithLoggingStatus = () => {
     setIsLoggedInUser((s) => !s);
   };
   return (
@@ -26,13 +27,14 @@ export default function Home() {
         <input
           type="checkbox"
           checked={isLoggedInUser}
-          onChange={handleChange}
+          onChange={swithLoggingStatus}
           name="login"
           id="login"
         />
         <label htmlFor="login">logged in</label>
         <Offers isLoggedInUser={isLoggedInUser} />
-        <OfferDetails isLoggedInUser={isLoggedInUser} />
+        {/* <OffersAll isLoggedInUser={isLoggedInUser} /> */}
+        {/* <OfferDetails isLoggedInUser={isLoggedInUser} /> */}
       </main>
     </>
   );

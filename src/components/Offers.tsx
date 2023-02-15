@@ -5,6 +5,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
+import LikeButtons from "./LikeButtons";
 
 interface OffersProps {
   isLoggedInUser: boolean;
@@ -94,7 +95,7 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
     style: "currency",
     currency: "EUR",
   });
-
+  console.log(" render offers");
   return (
     <div ref={parentRef}>
       <div
@@ -128,11 +129,11 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
                     allOfferPreviews[virtualRow.index * columns + i];
                   if (!offer) return null;
                   return (
-                    <Link
+                    <div
                       key={offer.productId}
                       className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
-                      href={"/?productId=" + offer.productId}
-                      scroll={false}
+                      //href={"/?productId=" + offer.productId}
+                      //scroll={false}
                     >
                       <img
                         alt={offer.productName}
@@ -141,17 +142,25 @@ export default function Offers({ isLoggedInUser }: OffersProps) {
                         width="500"
                       />
                       <div className="p-3">
-                        <h4 className="text-lg font-bold group-hover:underline">
-                          {offer.productName}
-                        </h4>
+                        <Link
+                          href={"/?productId=" + offer.productId}
+                          scroll={false}
+                        >
+                          <h4 className="text-lg font-bold group-hover:underline">
+                            {offer.productName}
+                          </h4>
+                        </Link>
                         <p className="flex justify-between">
                           <span>{formatter.format(offer.price)}</span>
                           <span>
-                            {offer.votes} {isLoggedInUser && "👍 👎"}
+                            {offer.votes}{" "}
+                            {isLoggedInUser && (
+                              <LikeButtons productId={offer.productId} />
+                            )}
                           </span>
                         </p>
                       </div>
-                    </Link>
+                    </div>
                   );
                 })}
               </div>

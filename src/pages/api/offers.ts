@@ -26,7 +26,7 @@ export interface ErrorResponse {
 }
 
 const productsPerPage = 50;
-const products = 480;
+export const products = 480;
 const answerDelayMs = 500;
 
 export default async function handler(
