@@ -1,11 +1,8 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
+import { useState } from "react";
+
 import Offers from "@/components/Offers";
 import OfferDetails from "@/components/OfferDetails";
-import { useState } from "react";
-import OffersAll from "@/components/OffersAll";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [isLoggedInUser, setIsLoggedInUser] = useState(true);
@@ -33,8 +30,7 @@ export default function Home() {
         />
         <label htmlFor="login">logged in</label>
         <Offers isLoggedInUser={isLoggedInUser} />
-        {/* <OffersAll isLoggedInUser={isLoggedInUser} /> */}
-        {/* <OfferDetails isLoggedInUser={isLoggedInUser} /> */}
+        <OfferDetails isLoggedInUser={isLoggedInUser} />
       </main>
     </>
   );
