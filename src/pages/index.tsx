@@ -30,7 +30,6 @@ export default function Home() {
         />
         <label htmlFor="login">logged in</label>
         <Offers isLoggedInUser={isLoggedInUser} />
-        <OfferDetails isLoggedInUser={isLoggedInUser} />
       </main>
     </>
   );

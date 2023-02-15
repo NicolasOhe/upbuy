@@ -1,27 +1,24 @@
+import { OfferPreview } from "@/pages/api/offers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LikeButtons from "./LikeButtons";
 
 interface OffersDetailsProps {
   isLoggedInUser: boolean;
+  offer?: OfferPreview;
+  close: () => void;
 }
 
-export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
-  const { query } = useRouter();
+export default function OfferDetails({
+  isLoggedInUser,
+  offer: offerPreview,
+  close,
+}: OffersDetailsProps) {
+  if (!offerPreview) return null;
 
-  const productId = parseInt(String(query.productId));
-  console.log("productId", productId);
-  if (!productId || Number.isNaN(productId)) return null;
-  const index = productId - 1234;
-
+  // TO DO: fech additional data from server
   const offer = {
-    productId: productId,
-    previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + productId,
-    productName: "Product name " + (index + 1),
-    price: 43.4 + index * 2,
-    currency: "EUR",
-    votes: 1234 + index * 3,
-    productPageURL: "/offer/" + productId,
+    ...offerPreview,
     details:
       "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione magni eius tenetur quibusdam sapiente perferendis sunt rerum, assumenda dolores? Nihil illo temporibus saepe, voluptates facere totam voluptatibus magni distinctio blanditiis, eaque, quia a iusto dolor eveniet! Ipsa in veniam sint magnam ad doloremque sapiente! Corporis aperiam omnis officia nulla voluptates?",
   };
@@ -48,6 +45,7 @@ export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
           className="absolute top-5 right-5 rounded-xl bg-white px-2 hover:underline"
           href="/"
           scroll={false}
+          onClick={close}
         >
           close
         </Link>
@@ -57,7 +55,7 @@ export default function OfferDetails({ isLoggedInUser }: OffersDetailsProps) {
             <span>{formatter.format(offer.price)}</span>
             <span>
               {offer.votes}{" "}
-              {isLoggedInUser && <LikeButtons productId={productId} />}
+              {isLoggedInUser && <LikeButtons productId={offer.productId} />}
             </span>
           </p>
           <p>{offer.details}</p>

@@ -5,7 +5,6 @@ import { GetVotesResponse } from "@/pages/api/user/votes";
 import { queryClient } from "@/pages/_app";
 import { getVotes } from "@/queryResolvers/getVotes";
 import { postVote } from "@/queryResolvers/postVote";
-
 import ThumbsDown from "@/components/icons/ThumbsDown";
 import ThumbsUp from "@/components/icons/ThumbsUp";
 
