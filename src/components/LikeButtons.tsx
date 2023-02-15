@@ -1,14 +1,13 @@
+import { useMutation, useQuery } from "react-query";
+
 import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
 import { GetVotesResponse } from "@/pages/api/user/votes";
 import { queryClient } from "@/pages/_app";
 import { getVotes } from "@/queryResolvers/getVotes";
 import { postVote } from "@/queryResolvers/postVote";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import ThumbsDown from "./ThumbsDown";
-import ThumbsUp from "./ThumbsUp";
+
+import ThumbsDown from "@/components/icons/ThumbsDown";
+import ThumbsUp from "@/components/icons/ThumbsUp";
 
 interface LikeButtonsProps {
   productId: number;
