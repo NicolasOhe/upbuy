@@ -4,8 +4,7 @@ import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 import { useInView } from "react-intersection-observer";
-
-const sentences = new Array(10000).fill(true).map(() => "asdfasdf afsdf asdf");
+import Link from "next/link";
 
 export default function Offers() {
   const [pageIndex, setPageIndex] = useState(1);
@@ -124,9 +123,11 @@ export default function Offers() {
                     allOfferPreviews[virtualRow.index * columns + i];
                   if (!offer) return null;
                   return (
-                    <div
+                    <Link
                       key={offer.productId}
                       className="group border border-slate-200 rounded-lg overflow-hidden hover:shadow-lg"
+                      href={"/?productId=" + offer.productId}
+                      scroll={false}
                     >
                       <img
                         alt={offer.productName}
@@ -143,7 +144,7 @@ export default function Offers() {
                           <span>{offer.votes} 👍 👎</span>
                         </p>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
@@ -158,7 +159,7 @@ export default function Offers() {
           setPageIndex((s) => s + 1);
           fetchNextPage();
         }}
-        //disabled={!hasNextPage || isFetchingNextPage}
+        disabled={!hasNextPage || isFetchingNextPage}
       >
         {isFetchingNextPage
           ? "Loading more..."
