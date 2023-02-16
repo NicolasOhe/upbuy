@@ -71,7 +71,7 @@ export default async function handler(
 
     return {
       productId: 1234 + index,
-      previewUrl: "https://loremflickr.com/500/250/laptop,sale?lock=" + index,
+      previewUrl: "https://loremflickr.com/300/150/laptop,sale?lock=" + index,
       productName: "Product name " + (index + 1),
       price: 43.4 + index * 2,
       currency: "EUR",

@@ -26,8 +26,8 @@ function OfferPreview({
       <img
         alt={offer.productName}
         src={offer.previewUrl}
-        height="250"
-        width="500"
+        height="150"
+        width="300"
         className="w-full"
       />
       <div className="p-3">
