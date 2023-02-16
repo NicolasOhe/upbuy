@@ -2,6 +2,7 @@ import { OfferPreview } from "@/pages/api/offers";
 import Link from "next/link";
 
 import LikeButtons from "@/components/LikeButtons";
+import { currencyFormatter } from "@/utils/currencyFormatter";
 
 interface OffersDetailsProps {
   isLoggedInUser: boolean;
@@ -22,11 +23,6 @@ export default function OfferDetails({
     details:
       "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione magni eius tenetur quibusdam sapiente perferendis sunt rerum, assumenda dolores? Nihil illo temporibus saepe, voluptates facere totam voluptatibus magni distinctio blanditiis, eaque, quia a iusto dolor eveniet! Ipsa in veniam sint magnam ad doloremque sapiente! Corporis aperiam omnis officia nulla voluptates?",
   };
-
-  const formatter = new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-  });
 
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 backdrop-blur bg-white/50 flex justify-center items-center p-4">
@@ -52,7 +48,7 @@ export default function OfferDetails({
         <div className="px-3 pt-5 pb-3">
           <h4 className="text-2xl font-bold pb-1">{offer.productName}</h4>
           <p className="flex justify-between pb-3">
-            <span>{formatter.format(offer.price)}</span>
+            <span>{currencyFormatter.format(offer.price)}</span>
             <span>
               {offer.votes}{" "}
               {isLoggedInUser && <LikeButtons productId={offer.productId} />}
