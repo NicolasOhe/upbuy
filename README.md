@@ -1,4 +1,4 @@
-This frontend demo shows an infinite list of product offers sorted by user likes. Logged in users can upvote or downvote the offers. When an offer preview is clicked, a detail view or the offer is shown.
+This [frontend demo](https://upbuy.vercel.app/) shows an infinite list of product offers sorted by user likes. Logged in users can upvote or downvote the offers. When an offer preview is clicked, a detail view or the offer is shown.
 
 ## Getting Started
 
