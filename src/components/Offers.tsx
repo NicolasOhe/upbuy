@@ -73,9 +73,9 @@ export default function Offers({
 
   const virtualizer = useWindowVirtualizer({
     count: Math.trunc(allOfferPreviews.length / 4) + 1,
-    estimateSize: () => 200,
+    estimateSize: () => 243,
     scrollMargin: parentOffsetRef.current,
-    overscan: 4,
+    overscan: 3,
   });
 
   const items = virtualizer.getVirtualItems();
@@ -101,7 +101,7 @@ export default function Offers({
                   key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={virtualizer.measureElement}
-                  className="grid grid-cols-4 gap-4 mb-4"
+                  className="grid grid-cols-4 gap-4 pb-4"
                 >
                   {getOffers(virtualRow.index).map((offer) => (
                     <OfferPreview
