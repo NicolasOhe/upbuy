@@ -11,6 +11,10 @@ export type OfferPreview = {
   productPageURL: string;
 };
 
+export interface OfferDetails extends OfferPreview {
+  details: string;
+}
+
 export interface GetPreviewsResponse {
   offerPreviews: OfferPreview[];
   hasMore: boolean;
@@ -71,7 +75,7 @@ export default async function handler(
       productName: "Product name " + (index + 1),
       price: 43.4 + index * 2,
       currency: "EUR",
-      votes: 1234 + index * 3,
+      votes: 1234 - index * 3,
       productPageURL: "/offer/" + (1234 + index),
     };
   });
