@@ -11,7 +11,7 @@ interface OfferPreviewProps {
   setSelectedProductId: (productId: number) => void;
 }
 
-export default function OfferPreview({
+function OfferPreview({
   isLoggedInUser,
   offer,
   setSelectedProductId,
@@ -53,3 +53,5 @@ export default function OfferPreview({
     </div>
   );
 }
+
+export default React.memo(OfferPreview);
