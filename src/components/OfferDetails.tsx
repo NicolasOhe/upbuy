@@ -32,7 +32,7 @@ export default function OfferDetails({
     <div className="fixed top-0 bottom-0 left-0 right-0 backdrop-blur bg-white/50 flex justify-center items-center p-4">
       <div
         key={offer.productId}
-        className="group drop-shadow-2xl bg-white rounded-lg overflow-hidden max-w-xl"
+        className="group drop-shadow-2xl bg-white rounded-lg overflow-hidden max-w-xl relative"
       >
         <img
           alt={offer.productName}
