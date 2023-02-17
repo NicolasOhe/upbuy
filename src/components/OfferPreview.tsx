@@ -37,6 +37,7 @@ function OfferPreview({
           href={"/?productId=" + offer.productId}
           scroll={false}
           onClick={() => setSelectedProductId(offer.productId)}
+          prefetch={false}
         >
           <h4 className="text-lg font-bold hover:underline">
             {offer.productName}
