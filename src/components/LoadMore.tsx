@@ -1,5 +1,5 @@
 import { UseInfiniteQueryResult } from "react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 import { ErrorResponse, GetPreviewsResponse } from "@/pages/api/offers";
@@ -13,6 +13,7 @@ export default function LoadMore({
   reactQueryContext,
   setPageIndex,
 }: LoadMoreProps) {
+  const isInViewForAWhile = useRef(false);
   const { fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } =
     reactQueryContext;
 
@@ -21,10 +22,20 @@ export default function LoadMore({
     rootMargin: "0px 0px 100% 0px",
   });
 
+  isInViewForAWhile.current = inView;
+
   useEffect(() => {
     if (inView && !isFetching && !isFetchingNextPage && hasNextPage) {
-      setPageIndex((s) => s + 1);
-      fetchNextPage();
+      /* This delay gives time to the intersection observer
+       to actually figure out that right after a new page has been added, 
+       then the button is no more "inView".
+       */
+      setTimeout(() => {
+        if (isInViewForAWhile.current) {
+          setPageIndex((s) => s + 1);
+          fetchNextPage();
+        }
+      }, 100);
     }
   }, [
     inView,
@@ -33,6 +44,7 @@ export default function LoadMore({
     isFetching,
     isFetchingNextPage,
     hasNextPage,
+    isInViewForAWhile,
   ]);
 
   return (
@@ -40,7 +52,7 @@ export default function LoadMore({
       <button
         ref={ref}
         onClick={() => {
-          setPageIndex((s) => s + 1);
+          //setPageIndex((s) => s + 1);
           fetchNextPage();
         }}
         disabled={!hasNextPage || isFetchingNextPage}
