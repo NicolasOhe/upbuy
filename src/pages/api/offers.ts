@@ -63,6 +63,7 @@ export default async function handler(
   if (startIndex + productsPerPage > products) {
     isLast = true;
     productsForPage = products - startIndex;
+    if (productsForPage < 0) productsForPage = 0;
   }
   console.log("productsForPage", productsForPage);
 
