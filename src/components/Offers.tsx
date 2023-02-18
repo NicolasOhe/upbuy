@@ -101,7 +101,7 @@ export default function Offers({
                   key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={virtualizer.measureElement}
-                  className="grid grid-cols-4 gap-4 pb-4"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-4"
                 >
                   {getOffers(virtualRow.index).map((offer) => (
                     <OfferPreview
